@@ -1,0 +1,66 @@
+   <!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+    .main {
+        margin-top: 2em;
+        padding:2em;
+        background: #dedede;
+    }
+    .header {
+        margin-top: 10%;
+        margin-bottom: 2em;
+    }
+</style>
+
+</head>
+<body>
+<h1 class="header">Welcome from Nginx on Docker!</h1>
+<p>Serving static HMTL from /usr/share/nginx/html through Nginx coupled with Javascript.</p>
+<p id="host"></p>
+<p>All content below comes from an fetch call to our API NodeJs server and served through Express.js</p>
+
+<div id="content" class="main"></div>
+
+<script>
+    const pel = document.getElementById('content'); 
+
+    const crnode = (e) => document.createElement(e);
+    //const apnd = (p, e) => p.append(e)
+    const apnd = (p, fn) => fn()
+
+    fetch('http://localhost:80/api')
+    .then((resp) => resp.json())
+    .then(function(data) {   
+        let c = Object.assign( {}, ...function _flatn(o) { 
+            return [].concat(...Object.keys(o)
+            .map(k => typeof o[k] === 'object' ? _flatn(o[k]) :({[k]: o[k]}) ))
+        }(data))
+        for(x in c) {
+            apnd(pel, () => {
+                let el = crnode ('p')
+                el.innerHTML = x + ' - ' + c[x] + '<br />'  
+                
+                return pel.append(el)
+            })                
+        }
+    })
+    .catch(function(error) {
+        console.log(error);
+        apnd(pel, () => {
+            let el = crnode ('p')
+            el.style.color = 'red'
+            el.innerHTML = "Something went wrong. Couldn't contact the API:  " + error 
+            
+            return pel.append(el)
+        })   
+    });   
+</script>
+</body>
+</html>
