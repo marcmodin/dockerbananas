@@ -1,4 +1,4 @@
-# Getting started with using Docker in production
+# Getting started with using Docker
 
 The following is a reference of my own exploration and findings on using **Docker**. It's also a short guide for future reference, starting with the very basics!
 
